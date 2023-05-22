@@ -1,3 +1,4 @@
+#%%
 import networkx as nx
 import json
 
@@ -37,4 +38,33 @@ def charger_resultats(nom_fichier):
             liste_resultats[title_value] = dic_translated_ligne
     return liste_resultats
 
-dic_acteur = charger_resultats("data.json")
+dic_Bacon = charger_resultats("data.json")
+
+def draw_Graph(dic, nb_film ,dir_Included=False):
+    G = nx.Graph()
+    i = 0
+    for value in dic.values():
+        if i < nb_film:
+            i += 1
+        else:
+            break
+        if dir_Included:
+            ensemble = set()
+            for(key,item) in value.items():
+                if key == "cast" or key == "directors":
+                    for personne in item:
+                        ensemble.add(personne)    
+            for elem1 in ensemble:
+                for elem2 in ensemble:
+                    if elem1 != elem2:
+                        G.add_edge(elem1,elem2)
+        else:
+            for elem1 in value["cast"]:
+                for elem2 in value["cast"]:
+                    if elem1 != elem2:
+                        G.add_edge(elem1,elem2)
+        
+    nx.draw(G)
+
+draw_Graph(dic_Bacon, 50, True)
+# %%
