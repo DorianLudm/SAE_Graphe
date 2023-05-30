@@ -40,14 +40,13 @@ def charger_resultats(nom_fichier):
 
 dic_Bacon = charger_resultats("data.json")
 
-def draw_Graph(dic, nb_film ,dir_Included=False):
+
+
+def getGraph(dic ,dir_Included=False):
     G = nx.Graph()
     i = 0
+    bool = False
     for value in dic.values():
-        if i < nb_film:
-            i += 1
-        else:
-            break
         if dir_Included:
             ensemble = set()
             for(key,item) in value.items():
@@ -64,7 +63,79 @@ def draw_Graph(dic, nb_film ,dir_Included=False):
                     if elem1 != elem2:
                         G.add_edge(elem1,elem2)
         
-    nx.draw(G)
+    return(G)
 
-draw_Graph(dic_Bacon, 50, True)
+G = getGraph(dic_Bacon)
+
+
+
+def collaborateurCommun(G, personne1, personne2):
+    res = []
+    for collab in G[personne1]:
+        if collab in G[personne2] and collab != personne1:
+            res.append(collab)
+    return res
+
+print(collaborateurCommun(G, "Joe Turkel", "Harrison Ford"))
+
+
+
+def collaborateurs_proches(G,u,k):
+    """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
+    
+    Parametres:
+        G: le graphe
+        u: le sommet de départ
+        k: la distance depuis u
+    """
+    if u not in G.nodes:
+        print(u,"est un illustre inconnu")
+        return None
+    collaborateurs = set()
+    collaborateurs.add(u)
+    print(collaborateurs)
+    for i in range(k):
+        collaborateurs_directs = set()
+        for c in collaborateurs:
+            for voisin in G.adj[c]:
+                if voisin not in collaborateurs:
+                    collaborateurs_directs.add(voisin)
+        collaborateurs = collaborateurs.union(collaborateurs_directs)
+    return collaborateurs
+
+# def distance_acteur(G, act1, act2):
+#     distance = 0
+#     if act1 not in G.nodes() or act2 not in G.nodes():
+#         return "Cette acteur est inconnu"
+#     acteur = set()
+#     acteur.add(act1)
+#     while act2 not in acteur:
+#         collaborateurs_directs = set()
+#         for c in acteur:
+#             for voisin in G.adj[c]:
+#                 if voisin not in acteur:
+#                     collaborateurs_directs.add(voisin)
+#         acteur = acteur.union(collaborateurs_directs)
+#         distance += 1
+#     return distance
+
+# print(distance_acteur(G, 'Michael Caine','Brandon Maggart'))
+
+
+
+def bfs(graph, starting_node):
+    visited = []
+    queue = [starting_node]
+    i = 0
+    while queue:
+        node = queue.pop(0)
+        if node not in visited:
+            visited.append(node)
+            i += 1         
+            for edge in graph.edges:
+                if edge[0] == node:
+                    queue.append(edge[1])
+                elif edge[1] == node:
+                    queue.append(edge[0])
+    return i
 # %%
