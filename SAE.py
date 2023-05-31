@@ -123,10 +123,10 @@ def collaborateurs_proches(G,u,k):
 
 
 
-def bfs(graph, starting_node):
+def centralite_acteur(graph, acteur):
     visited = []
-    queue = [starting_node]
-    i = 0
+    queue = [acteur]
+    i = -1
     while queue:
         node = queue.pop(0)
         if node not in visited:
@@ -138,4 +138,17 @@ def bfs(graph, starting_node):
                 elif edge[1] == node:
                     queue.append(edge[0])
     return i
+
+def centralite(graph):
+    ppc = 0
+    acteur_res = ""
+    centralite_a = 0
+    for acteur in G.nodes():
+        ppc = centralite_acteur(graph, acteur)
+        break
+    for acteur in G.nodes():
+        centralite_a = centralite_acteur(graph, acteur)
+        if centralite_a < ppc:
+            ppc = centralite_a
+             
 # %%
