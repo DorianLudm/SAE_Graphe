@@ -103,22 +103,26 @@ def collaborateurs_proches(G,u,k):
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
 
-# def distance_acteur(G, act1, act2):
-#     distance = 0
-#     if act1 not in G.nodes() or act2 not in G.nodes():
-#         return "Cette acteur est inconnu"
-#     acteur = set()
-#     acteur.add(act1)
-#     while act2 not in acteur:
-#         collaborateurs_directs = set()
-#         for c in acteur:
-#             for voisin in G[c]:
-#                 if voisin not in acteur:
-#                     collaborateurs_directs.add(voisin)
-#         acteur = acteur.union(collaborateurs_directs)
-#         distance += 1
-#     return distance
 
+
+def distance_acteur(G, act1, act2):
+    if act1 in G.nodes() or act2 in G.nodes():
+        visited = []
+        queue = [act1]
+        i = -1
+        while queue:
+            node = queue.pop(0)
+            if node == act2:
+                        return i
+            if node not in visited:
+                visited.append(node)
+                i += 1         
+                for edge in G.edges:
+                    if edge[0] == node:
+                        queue.append(edge[1])
+                    elif edge[1] == node:
+                        queue.append(edge[0])
+    return None
 # print(distance_acteur(G, 'Michael Caine','Brandon Maggart'))
 
 
@@ -151,40 +155,19 @@ def centralite(graph):
         if centralite_a < ppc:
             ppc = centralite_a
              
-lePlusAuCentre = centralite(G)
+#lePlusAuCentre = centralite(G)
+print(centralite_acteur(G, ""))
 
 
 
 def plusGrandeDistanceEntreActeurs(graph):
-    visited = []
-    for acteur in G.nodes():
-        depart = acteur
-        break
-    #On cherche un acteur sur l'extremite du graphe
-    queue = [depart]
-    node = depart
-    while queue:
-        node = queue.pop(0)
-        if node not in visited:
-            visited.append(node)       
-            for edge in graph.edges:
-                if edge[0] == node:
-                    queue.append(edge[1])
-                elif edge[1] == node:
-                    queue.append(edge[0])
-    #On cherche la distance avec l'extremite la plus eloignee
-    # queue2 = [node]
-    # i = -1
-    # while queue2:
-    #     node2 = queue2.pop(0)
-    #     if node2 not in visited:
-    #         visited.append(node2)
-    #         i += 1         
-    #         for edge in graph.edges:
-    #             if edge[0] == node2:
-    #                 queue2.append(edge[1])
-    #             elif edge[1] == node2:
-    #                 queue2.append(edge[0])
-    # return i
-    return centralite_acteur(G, node)
+    best_distance = None
+    for acteur1 in G.nodes():
+        for acteur2 in G.nodes():
+            if acteur1 != acteur2:
+                distance = distance_acteur(G, acteur1, acteur2)
+                if best_distance == None or distance > best_distance:
+                    best_distance = distance
+    return distance
+                
 # %%
